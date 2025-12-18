@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+    <title>BizMate AI | Умное рабочее пространство</title>
+    
+    <!-- Агрессивный перехват Escape на уровне ядра -->
+    <script>
+      (function() {
+        const block = function(e) {
+          if (e.key === 'Escape' || e.keyCode === 27) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            return false;
+          }
+        };
+        [window, document, document.documentElement].forEach(target => {
+          target.addEventListener('keydown', block, true);
+          target.addEventListener('keyup', block, true);
+          target.addEventListener('keypress', block, true);
+        });
+        
+        Object.defineProperty(window, 'onkeydown', {
+          set: function(v) { },
+          get: function() { return block; }
+        });
+      })();
+    </script>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💼</text></svg>">
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              notion: {
+                bg: '#ffffff', sidebar: '#f7f7f5', hover: '#efefef', border: '#e0e0e0', text: '#37352f', dim: '#9b9a97',
+                dark: { bg: '#191919', sidebar: '#202020', border: '#2f2f2f', hover: '#2c2c2c', text: '#d4d4d4' }
+              }
+            },
+            fontFamily: { sans: ['inter', 'sans-serif'] }
+          }
+        }
+      }
+    </script>
+    <style>
+      body { background-color: white; color: #37352f; -webkit-font-smoothing: antialiased; }
+      .dark body { background-color: #191919; color: #d4d4d4; }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
+    "react-markdown": "https://esm.sh/react-markdown@^10.1.0",
+    "recharts": "https://esm.sh/recharts@^3.6.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "vite": "https://esm.sh/vite@^7.3.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.88.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <!-- Vite entry point -->
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
