@@ -97,62 +97,62 @@ export default function ChatInterface({
          </div>
        </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-6">
-        {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center opacity-40">
-            <Sparkles size={48} className="mb-4" />
-            <p className="text-lg font-bold">Чем я могу помочь?</p>
-            <p className="text-sm">Анализ в реальном времени, управление задачами и заметками</p>
-          </div>
-        )}
-        {messages.map((msg) => (
-          <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`flex flex-col max-w-[92%] md:max-w-[80%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-              <div className={`px-5 py-3 rounded-2xl leading-relaxed shadow-sm transition-colors text-base ${msg.role === 'user' ? 'bg-black dark:bg-white text-white dark:text-black rounded-br-none' : 'bg-white dark:bg-[#202020] border border-gray-100 dark:border-[#2f2f2f] text-gray-900 dark:text-gray-100 rounded-bl-none'}`}>
-                <ReactMarkdown className="prose dark:prose-invert max-w-none">{msg.content}</ReactMarkdown>
-                {msg.image && (
-                   <div className="mt-3 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg">
-                      <img src={`data:image/png;base64,${msg.image}`} alt="AI Generated" className="w-full h-auto" />
-                   </div>
+        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+          {messages.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-full text-center opacity-40">
+              <Sparkles size={48} className="mb-4" />
+              <p className="text-lg font-bold">Чем я могу помочь?</p>
+              <p className="text-sm">Анализ в реальном времени, управление задачами и заметками</p>
+            </div>
+          )}
+          {messages.map((msg) => (
+            <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`flex flex-col max-w-[92%] md:max-w-[80%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                <div className={`px-5 py-3 rounded-2xl leading-relaxed shadow-sm transition-colors text-base ${msg.role === 'user' ? 'bg-black dark:bg-white text-white dark:text-black rounded-br-none' : 'bg-white dark:bg-[#202020] border border-gray-100 dark:border-[#2f2f2f] text-gray-900 dark:text-gray-100 rounded-bl-none'}`}>
+                  <ReactMarkdown className="prose dark:prose-invert max-w-none">{msg.content}</ReactMarkdown>
+                  {msg.image && (
+                     <div className="mt-3 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg">
+                        <img src={`data:image/png;base64,${msg.image}`} alt="AI Generated" className="w-full h-auto" />
+                     </div>
+                  )}
+                </div>
+                {msg.role === 'model' && msg.content && (
+                  <div className="mt-1.5 flex justify-start pl-2">
+                    <button onClick={() => handleCopy(msg.content, msg.id)} className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all ${copiedId === msg.id ? 'text-green-600 bg-green-50 dark:bg-green-900/10' : 'text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2c2c2c]'}`}>
+                      {copiedId === msg.id ? <><Check size={12} /><span>Скопировано</span></> : <><Copy size={12} /><span>Копировать</span></>}
+                    </button>
+                  </div>
                 )}
               </div>
-              {msg.role === 'model' && msg.content && (
-                <div className="mt-1.5 flex justify-start pl-2">
-                  <button onClick={() => handleCopy(msg.content, msg.id)} className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all ${copiedId === msg.id ? 'text-green-600 bg-green-50 dark:bg-green-900/10' : 'text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2c2c2c]'}`}>
-                    {copiedId === msg.id ? <><Check size={12} /><span>Скопировано</span></> : <><Copy size={12} /><span>Копировать</span></>}
-                  </button>
+            </div>
+          ))}
+          {isProcessing && (
+            <div className="flex justify-start">
+              <div className="bg-white dark:bg-[#202020] border border-gray-100 dark:border-[#2f2f2f] px-4 py-3 rounded-2xl rounded-bl-none flex items-center space-x-2 shadow-sm">
+                <Loader2 size={16} className="animate-spin text-indigo-500" />
+                <span className="text-sm text-gray-500 font-medium">Думаю...</span>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        <div className="px-4 py-4 md:py-8 bg-white dark:bg-[#191919] border-t border-gray-100 dark:border-[#2f2f2f] flex-shrink-0 z-20 pb-20 md:pb-8">
+            <form onSubmit={handleSubmit} className="relative max-w-2xl w-full mx-auto">
+              {file && (
+                <div className="absolute -top-12 left-0 bg-gray-100 dark:bg-[#2c2c2c] px-3 py-1.5 rounded-xl border border-gray-200 dark:border-[#3c3c3c] flex items-center text-xs font-bold animate-in slide-in-from-bottom-2">
+                  <FileText size={14} className="mr-2 text-blue-500" />
+                  <span className="truncate max-w-[150px]">{file.name}</span>
+                  <button type="button" onClick={() => setFile(null)} className="ml-2 text-gray-400 hover:text-red-500"><X size={14} /></button>
                 </div>
               )}
-            </div>
-          </div>
-        ))}
-        {isProcessing && (
-          <div className="flex justify-start">
-            <div className="bg-white dark:bg-[#202020] border border-gray-100 dark:border-[#2f2f2f] px-4 py-3 rounded-2xl rounded-bl-none flex items-center space-x-2 shadow-sm">
-              <Loader2 size={16} className="animate-spin text-indigo-500" />
-              <span className="text-sm text-gray-500 font-medium">Думаю...</span>
-            </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* FIXED Input area for Desktop & Mobile positioning */}
-      <div className="px-4 py-4 md:py-8 bg-white dark:bg-[#191919] border-t border-gray-100 dark:border-[#2f2f2f] flex-shrink-0 z-20 pb-20 md:pb-8">
-          <form onSubmit={handleSubmit} className="relative max-w-2xl w-full mx-auto">
-            {file && (
-              <div className="absolute -top-12 left-0 bg-gray-100 dark:bg-[#2c2c2c] px-3 py-1.5 rounded-xl border border-gray-200 dark:border-[#3c3c3c] flex items-center text-xs font-bold animate-in slide-in-from-bottom-2">
-                <FileText size={14} className="mr-2 text-blue-500" />
-                <span className="truncate max-w-[150px]">{file.name}</span>
-                <button type="button" onClick={() => setFile(null)} className="ml-2 text-gray-400 hover:text-red-500"><X size={14} /></button>
+              <div className="relative flex items-center bg-gray-100 dark:bg-[#2c2c2c] rounded-full p-1.5 border border-transparent focus-within:border-gray-300 dark:focus-within:border-[#3f3f3f] focus-within:bg-white dark:focus-within:bg-[#202020] transition-all shadow-sm">
+                <button type="button" onClick={() => fileInputRef.current?.click()} className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-full transition-colors"><Paperclip size={18} /><input type="file" ref={fileInputRef} className="hidden" onChange={e => setFile(e.target.files?.[0] || null)} /></button>
+                <input value={input} onChange={e => setInput(e.target.value)} placeholder="Спросите о задачах или заметках..." className="flex-1 bg-transparent border-none outline-none text-gray-900 dark:text-white px-3 text-base" />
+                <button type="submit" disabled={(!input.trim() && !file) || isProcessing} className="p-2 rounded-full bg-black dark:bg-white text-white dark:text-black disabled:opacity-10 transition-all shadow-md active:scale-90"><ArrowUp size={18} /></button>
               </div>
-            )}
-            <div className="relative flex items-center bg-gray-100 dark:bg-[#2c2c2c] rounded-full p-1.5 border border-transparent focus-within:border-gray-300 dark:focus-within:border-[#3f3f3f] focus-within:bg-white dark:focus-within:bg-[#202020] transition-all shadow-sm">
-              <button type="button" onClick={() => fileInputRef.current?.click()} className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-full transition-colors"><Paperclip size={18} /><input type="file" ref={fileInputRef} className="hidden" onChange={e => setFile(e.target.files?.[0] || null)} /></button>
-              <input value={input} onChange={e => setInput(e.target.value)} placeholder="Спросите о задачах или заметках..." className="flex-1 bg-transparent border-none outline-none text-gray-900 dark:text-white px-3 text-base" />
-              <button type="submit" disabled={(!input.trim() && !file) || isProcessing} className="p-2 rounded-full bg-black dark:bg-white text-white dark:text-black disabled:opacity-10 transition-all shadow-md active:scale-90"><ArrowUp size={18} /></button>
-            </div>
-          </form>
+            </form>
+        </div>
       </div>
     </div>
   );
